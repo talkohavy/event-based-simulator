@@ -32,7 +32,7 @@ import type {
  */
 export class SimulationEngine {
   private futureEventList!: PriorityQueue<SimulationEvent>;
-  private handlers = new Map<string, EventHandler>();
+  private eventHandlers = new Map<string, EventHandler>();
   private config: ResolvedConfig;
   private rng!: () => number;
   private distributions!: DistributionFunctions;
@@ -69,8 +69,8 @@ export class SimulationEngine {
     if (this.initFn) {
       this.initFn({
         state: this.state,
-        schedule: this.schedule,
-        scheduleAt: this.scheduleAt,
+        schedule: this.schedule.bind(this),
+        scheduleAt: this.scheduleAt.bind(this),
         rng: this.rng,
         distributions: this.distributions,
       });
@@ -100,20 +100,21 @@ export class SimulationEngine {
         this.eventLog.push({ ...event });
       }
 
-      const handler = this.handlers.get(event.type);
-      if (handler) {
-        handler({
-          clock: this.clock,
-          event,
-          state: this.state,
-          stats: this.stats,
-          schedule: this.schedule,
-          scheduleAt: this.scheduleAt,
-          cancelEvent: this.cancelEvent,
-          rng: this.rng,
-          distributions: this.distributions,
-        });
-      }
+      const eventHandler = this.eventHandlers.get(event.type);
+
+      if (!eventHandler) throw new Error(`Handler for event type ${event.type} not found`);
+
+      eventHandler({
+        clock: this.clock,
+        event,
+        state: this.state,
+        stats: this.stats,
+        schedule: this.schedule.bind(this),
+        scheduleAt: this.scheduleAt.bind(this),
+        cancelEvent: this.cancelEvent.bind(this),
+        rng: this.rng,
+        distributions: this.distributions,
+      });
 
       this.eventsProcessed++;
     }
@@ -138,7 +139,7 @@ export class SimulationEngine {
   }
 
   on(eventType: string, handler: EventHandler) {
-    this.handlers.set(eventType, handler);
+    this.eventHandlers.set(eventType, handler);
   }
 
   private reset() {
