@@ -1,0 +1,67 @@
+{
+  "name": "LuckyLove Frontend Engine",
+  "short_name": "LuckyLove",
+  "description": "LuckyLove is an app powered Vite & React.",
+  "start_url": "/index.html",
+  "prefer_related_applications": false,
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/heart-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/heart-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/heart-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/heart-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "id": "/index.html",
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "dir": "ltr",
+  "background_color": "#ffffff",
+  "theme_color": "#1e293b",
+  "scope": ".",
+  "screenshots": [
+    {
+      "src": "/vite-demo-650x692.png",
+      "sizes": "650x692",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Site Screenshot 1"
+    },
+    {
+      "src": "/vite-demo-650x692.png",
+      "sizes": "650x692",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Site Screenshot 2"
+    },
+    {
+      "src": "/screenshot-640x549.png",
+      "sizes": "640x549",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Wonder Widgets"
+    },
+    {
+      "src": "/screenshot-640x549.png",
+      "sizes": "640x549",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Amazing Widgets"
+    }
+  ]
+}
