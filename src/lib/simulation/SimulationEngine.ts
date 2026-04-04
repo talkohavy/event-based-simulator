@@ -83,13 +83,11 @@ export class SimulationEngine {
     this.stats = new StatisticsCollector();
     this.futureEventList = new PriorityQueue<SimulationEvent>((a, b) => a.time - b.time);
 
-    const { schedule, scheduleAt, cancelEvent } = this.createSchedulers();
-
     if (this.initFn) {
       this.initFn({
         state: this.state,
-        schedule,
-        scheduleAt,
+        schedule: this.schedule,
+        scheduleAt: this.scheduleAt,
         rng: this.rng,
         distributions: this.distributions,
       });
@@ -128,9 +126,9 @@ export class SimulationEngine {
           event,
           state: this.state,
           stats: this.stats,
-          schedule,
-          scheduleAt,
-          cancelEvent,
+          schedule: this.schedule,
+          scheduleAt: this.scheduleAt,
+          cancelEvent: this.cancelEvent,
           rng: this.rng,
           distributions: this.distributions,
         });
@@ -168,17 +166,16 @@ export class SimulationEngine {
     return id;
   }
 
-  private createSchedulers() {
-    const schedule = (delay: number, type: string, data?: Record<string, any>): number => {
-      return this.scheduleEvent(this.clock + delay, type, data);
-    };
-    const scheduleAt = (absoluteTime: number, type: string, data?: Record<string, any>): number => {
-      return this.scheduleEvent(absoluteTime, type, data);
-    };
-    const cancelEvent = (eventId: number): void => {
-      this.cancelled.add(eventId);
-    };
-    return { schedule, scheduleAt, cancelEvent };
+  private schedule(delay: number, type: string, data?: Record<string, any>): number {
+    return this.scheduleEvent(this.clock + delay, type, data);
+  }
+
+  private scheduleAt(absoluteTime: number, type: string, data?: Record<string, any>): number {
+    return this.scheduleEvent(absoluteTime, type, data);
+  }
+
+  private cancelEvent(eventId: number): void {
+    this.cancelled.add(eventId);
   }
 }
 
