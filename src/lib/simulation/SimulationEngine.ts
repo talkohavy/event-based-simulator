@@ -31,19 +31,19 @@ import type {
  * ```
  */
 export class SimulationEngine {
+  private clock!: number;
+  private nextEventId!: number;
+  private eventsProcessed!: number;
   private futureEventList!: PriorityQueue<SimulationEvent>;
-  private eventHandlers = new Map<string, EventHandler>();
+  private eventLog!: SimulationEvent[];
+  private state!: Record<string, any>;
+  private readonly eventHandlers: Map<string, EventHandler>;
+  private readonly cancelled: Set<number>;
+  private initFn?: (ctx: InitContext) => void;
   private config: ResolvedConfig;
   private rng!: () => number;
   private distributions!: DistributionFunctions;
   private stats!: StatisticsCollector;
-  private state: Record<string, any> = {};
-  private eventLog: SimulationEvent[] = [];
-  private clock = 0;
-  private nextEventId = 1;
-  private eventsProcessed = 0;
-  private cancelled = new Set<number>();
-  private initFn?: (ctx: InitContext) => void;
 
   constructor(config: SimulationEngineConstructorProps) {
     this.config = {
@@ -51,6 +51,9 @@ export class SimulationEngine {
       seed: config.seed ?? Date.now(),
       shouldRecordEventLog: config.shouldRecordEventLog ?? true,
     };
+
+    this.eventHandlers = new Map<string, EventHandler>();
+    this.cancelled = new Set<number>();
   }
 
   setInitFunction(fn: (ctx: InitContext) => void) {
@@ -144,11 +147,11 @@ export class SimulationEngine {
 
   private reset() {
     this.clock = 0;
+    this.nextEventId = 1;
     this.eventsProcessed = 0;
     this.eventLog = [];
     this.state = {};
     this.cancelled.clear();
-    this.nextEventId = 1;
     this.futureEventList = new PriorityQueue<SimulationEvent>((a, b) => a.time - b.time);
     this.rng = createRandomNumberGenerator(this.config.seed);
     this.distributions = createDistributions(this.rng);
