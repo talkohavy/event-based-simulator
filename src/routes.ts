@@ -3,11 +3,17 @@ import type { Route } from './common/types';
 
 // Main pages
 const HomePage = lazy(() => import('./pages/Home'));
+const SimulationPage = lazy(() => import('./pages/Simulation'));
 
 export const routes: Array<Route> = [
   {
     to: 'home',
     text: 'Home',
     Component: HomePage,
+  },
+  {
+    to: 'simulation',
+    text: 'Simulation',
+    Component: SimulationPage,
   },
 ];
