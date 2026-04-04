@@ -1,9 +1,50 @@
+import { useMemo } from 'react';
+import { Table, createColumnHelper } from '@talkohavy/table';
 import { CARD, MAX_LOG_DISPLAY } from '../../logic/constants';
 import { formatEventData } from '../../logic/utils/formatEventData';
-import type { SimulationResults } from '../../../../lib/simulation';
+import type { SimulationEvent, SimulationResults } from '../../../../lib/simulation';
+
+type EventLogRow = SimulationEvent & { rowNum: number };
+
+const columnHelper = createColumnHelper<EventLogRow>();
+
+const eventLogColumns = [
+  columnHelper.accessor('rowNum', {
+    header: '#',
+    cell: (info) => <span className='text-gray-400'>{info.getValue()}</span>,
+  }),
+  columnHelper.accessor('time', {
+    header: 'Time',
+    cell: (info) => info.getValue().toFixed(4),
+  }),
+  columnHelper.accessor('type', {
+    header: 'Event',
+    cell: (info) => {
+      const type = info.getValue();
+      return (
+        <span
+          className={type === 'arrival' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'}
+        >
+          {type}
+        </span>
+      );
+    },
+  }),
+  columnHelper.accessor('data', {
+    header: 'Data',
+    cell: (info) => {
+      const data = info.getValue();
+      return <span className='text-gray-500 dark:text-gray-400'>{data ? formatEventData(data) : '—'}</span>;
+    },
+    meta: { className: 'flex-1' },
+  }),
+];
 
 export default function EventLogTable({ events }: { events: SimulationResults['eventLog'] }) {
-  const displayed = events.slice(0, MAX_LOG_DISPLAY);
+  const data = useMemo(() => {
+    const displayed = events.slice(0, MAX_LOG_DISPLAY);
+    return displayed.map((ev, i) => ({ ...ev, rowNum: i + 1 }));
+  }, [events]);
 
   return (
     <div className={CARD}>
@@ -16,37 +57,8 @@ export default function EventLogTable({ events }: { events: SimulationResults['e
         </span>
       </h2>
 
-      <div className='max-h-80 overflow-auto'>
-        <table className='w-full text-sm'>
-          <thead className='sticky top-0 bg-white dark:bg-gray-900'>
-            <tr className='border-b border-gray-200 dark:border-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400'>
-              <th className='py-2 pr-4 text-left'>#</th>
-              <th className='py-2 pr-4 text-left'>Time</th>
-              <th className='py-2 pr-4 text-left'>Event</th>
-              <th className='py-2 text-left'>Data</th>
-            </tr>
-          </thead>
-          <tbody className='font-mono text-xs'>
-            {displayed.map((ev, i) => (
-              <tr key={ev.id} className='border-b border-gray-50 dark:border-gray-800'>
-                <td className='py-1 pr-4 text-gray-400'>{i + 1}</td>
-                <td className='py-1 pr-4'>{ev.time.toFixed(4)}</td>
-                <td className='py-1 pr-4'>
-                  <span
-                    className={
-                      ev.type === 'arrival'
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-emerald-600 dark:text-emerald-400'
-                    }
-                  >
-                    {ev.type}
-                  </span>
-                </td>
-                <td className='py-1 text-gray-500 dark:text-gray-400'>{ev.data ? formatEventData(ev.data) : '—'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className='h-80 overflow-auto font-mono text-xs'>
+        <Table data={data} columnDefs={eventLogColumns} className='size-full' allowColumnResizing />
       </div>
     </div>
   );
