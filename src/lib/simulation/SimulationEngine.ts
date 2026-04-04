@@ -9,15 +9,8 @@ import type {
   SimulationResults,
   InitContext,
   DistributionFunctions,
-  StopCondition,
+  ResolvedConfig,
 } from './types';
-
-type ResolvedConfig = {
-  seed: number;
-  maxEvents: number;
-  stopWhen: StopCondition;
-  recordEventLog: boolean;
-};
 
 /**
  * Generic discrete-event simulation engine.

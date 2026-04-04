@@ -39,7 +39,14 @@ export type InitContext = {
 
 export type EventHandler = (ctx: SimulationContext) => void;
 
-export type StopCondition = (info: { clock: number; eventsProcessed: number; state: Record<string, any> }) => boolean;
+type StopCondition = (info: { clock: number; eventsProcessed: number; state: Record<string, any> }) => boolean;
+
+export type ResolvedConfig = {
+  seed: number;
+  maxEvents: number;
+  stopWhen: StopCondition;
+  recordEventLog: boolean;
+};
 
 export type SimulationConfig = {
   seed?: number;
