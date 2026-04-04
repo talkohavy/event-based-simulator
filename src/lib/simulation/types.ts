@@ -41,17 +41,18 @@ export type EventHandler = (ctx: SimulationContext) => void;
 
 type StopCondition = (info: { clock: number; eventsProcessed: number; state: Record<string, any> }) => boolean;
 
-export type ResolvedConfig = {
-  seed: number;
+export type SimulationEngineConstructorProps = {
   stopWhen: StopCondition;
-  recordEventLog: boolean;
+  seed?: number;
+  /**
+   * Whether to record the event log.
+   *
+   * @default true
+   */
+  shouldRecordEventLog?: boolean;
 };
 
-export type SimulationConfig = {
-  seed?: number;
-  stopWhen?: StopCondition;
-  recordEventLog?: boolean;
-};
+export type ResolvedConfig = Required<SimulationEngineConstructorProps>;
 
 export type StatsSummary = {
   name: string;

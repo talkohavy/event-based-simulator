@@ -4,7 +4,7 @@ import { createRandomNumberGenerator } from './logic/utils/createRandomNumberGen
 import { StatisticsCollector } from './logic/utils/StatisticsCollector';
 import type {
   SimulationEvent,
-  SimulationConfig,
+  SimulationEngineConstructorProps,
   EventHandler,
   SimulationResults,
   InitContext,
@@ -45,11 +45,11 @@ export class SimulationEngine {
   private cancelled = new Set<number>();
   private initFn?: (ctx: InitContext) => void;
 
-  constructor(config: SimulationConfig = {}) {
+  constructor(config: SimulationEngineConstructorProps) {
     this.config = {
+      stopWhen: config.stopWhen,
       seed: config.seed ?? Date.now(),
-      stopWhen: config.stopWhen ?? (() => false),
-      recordEventLog: config.recordEventLog ?? true,
+      shouldRecordEventLog: config.shouldRecordEventLog ?? true,
     };
   }
 
@@ -96,7 +96,7 @@ export class SimulationEngine {
         break;
       }
 
-      if (this.config.recordEventLog) {
+      if (this.config.shouldRecordEventLog) {
         this.eventLog.push({ ...event });
       }
 
@@ -173,6 +173,6 @@ export class SimulationEngine {
   }
 }
 
-export function createSimulation(config?: SimulationConfig): SimulationEngine {
+export function createSimulation(config: SimulationEngineConstructorProps): SimulationEngine {
   return new SimulationEngine(config);
 }
