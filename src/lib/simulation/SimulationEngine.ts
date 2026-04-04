@@ -48,7 +48,6 @@ export class SimulationEngine {
   constructor(config: SimulationConfig = {}) {
     this.config = {
       seed: config.seed ?? Date.now(),
-      maxEvents: config.maxEvents ?? 100_000,
       stopWhen: config.stopWhen ?? (() => false),
       recordEventLog: config.recordEventLog ?? true,
     };
@@ -78,8 +77,6 @@ export class SimulationEngine {
     }
 
     while (!this.futureEventList.isEmpty()) {
-      if (this.eventsProcessed >= this.config.maxEvents) break;
-
       const event = this.futureEventList.dequeue()!;
 
       if (this.cancelled.has(event.id)) {

@@ -43,14 +43,12 @@ type StopCondition = (info: { clock: number; eventsProcessed: number; state: Rec
 
 export type ResolvedConfig = {
   seed: number;
-  maxEvents: number;
   stopWhen: StopCondition;
   recordEventLog: boolean;
 };
 
 export type SimulationConfig = {
   seed?: number;
-  maxEvents?: number;
   stopWhen?: StopCondition;
   recordEventLog?: boolean;
 };
