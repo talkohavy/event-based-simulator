@@ -72,16 +72,7 @@ export class SimulationEngine {
    * Can be called multiple times — each call resets all state.
    */
   run(): SimulationResults {
-    this.clock = 0;
-    this.eventsProcessed = 0;
-    this.eventLog = [];
-    this.state = {};
-    this.cancelled.clear();
-    this.nextEventId = 1;
-    this.rng = createRandomNumberGenerator(this.config.seed);
-    this.distributions = createDistributions(this.rng);
-    this.stats = new StatisticsCollector();
-    this.futureEventList = new PriorityQueue<SimulationEvent>((a, b) => a.time - b.time);
+    this.reset();
 
     if (this.initFn) {
       this.initFn({
@@ -158,6 +149,19 @@ export class SimulationEngine {
 
   on(eventType: string, handler: EventHandler) {
     this.handlers.set(eventType, handler);
+  }
+
+  private reset() {
+    this.clock = 0;
+    this.eventsProcessed = 0;
+    this.eventLog = [];
+    this.state = {};
+    this.cancelled.clear();
+    this.nextEventId = 1;
+    this.futureEventList = new PriorityQueue<SimulationEvent>((a, b) => a.time - b.time);
+    this.rng = createRandomNumberGenerator(this.config.seed);
+    this.distributions = createDistributions(this.rng);
+    this.stats = new StatisticsCollector();
   }
 
   private scheduleEvent(time: number, type: string, data?: Record<string, any>): number {
