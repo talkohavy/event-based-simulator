@@ -3,17 +3,16 @@ import { downsample } from '../../logic/utils/downsample';
 import { integerTicks } from '../../logic/utils/integerTicks';
 import { niceTimeTicks } from '../../logic/utils/niceTimeTicks';
 
-export default function StepChart({
-  data,
-  title,
-  xLabel = 'Time',
-  yLabel = '',
-}: {
+type StepChartProps = {
   data: Array<{ time: number; value: number }>;
   title: string;
   xLabel?: string;
   yLabel?: string;
-}) {
+};
+
+export default function StepChart(props: StepChartProps) {
+  const { data, title, xLabel = 'Time', yLabel = '' } = props;
+
   if (!data || data.length === 0) return null;
 
   const displayData = data.length > 2000 ? downsample(data, 2000) : data;
