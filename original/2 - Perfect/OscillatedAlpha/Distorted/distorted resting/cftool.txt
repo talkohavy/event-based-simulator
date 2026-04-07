@@ -1,0 +1,7 @@
+A*(1+cos(2*pi/T*t + phi))*exp(-1/tau*t)/2
+a*exp(-b*t)*cos(w*t+p)
+
+
+a*exp(-(1/tau)*t)*cos(2*pi/T*t+phi)
+
+
