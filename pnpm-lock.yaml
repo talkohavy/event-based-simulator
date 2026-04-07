@@ -24,8 +24,8 @@ importers:
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
       '@talkohavy/charts':
-        specifier: ^2.0.1
-        version: 2.0.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1)
+        specifier: ^2.0.3
+        version: 2.0.3(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1)
       '@talkohavy/filters':
         specifier: ^3.0.0
         version: 3.0.0
@@ -2353,8 +2353,8 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@talkohavy/charts@2.0.1':
-    resolution: {integrity: sha512-fwbOtK20uJccISoMknrPyM6KAEXSuWARshDK7h1PT5vak+L05IA7YeUnubwAmylgikWgsvh1b4CqsfAUxP6G4Q==}
+  '@talkohavy/charts@2.0.3':
+    resolution: {integrity: sha512-A2FkdhUQtsjgpMQXKWTRQMSWsGfMZOs0Sr8QYXvXe7gp7c6xgfR2fCBfp8DsbzPiln8oPmQ1KHo3MxssEixuDg==}
     peerDependencies:
       react: ^18.3.1
       react-dom: ^18.3.1
@@ -2505,9 +2505,6 @@ packages:
 
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
-
-  '@types/recharts-scale@1.0.3':
-    resolution: {integrity: sha512-viLNg2MJdZig9m5eXjKqhdVazoh+s0hibce6HiwWEnRvwjTT76ZWA0thdgu0k2wv6rVrMIT1shPYVFctWjYjdw==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -4757,9 +4754,6 @@ packages:
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
-
-  recharts-scale@0.4.5:
-    resolution: {integrity: sha512-kivNFO+0OcUNu7jQquLXAxz1FIwZj8nrj+YkOKc5694NbjCvcT6aSZiIzNzd2Kul4o4rTto8QVR9lMNtxD4G1w==}
 
   recharts@3.8.1:
     resolution: {integrity: sha512-mwzmO1s9sFL0TduUpwndxCUNoXsBw3u3E/0+A+cLcrSfQitSG62L32N69GhqUrrT5qKcAE3pCGVINC6pqkBBQg==}
@@ -7658,13 +7652,11 @@ snapshots:
       tailwindcss: 4.2.2
       vite: rolldown-vite@7.2.0(@types/node@25.5.2)(esbuild@0.28.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)
 
-  '@talkohavy/charts@2.0.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1)':
+  '@talkohavy/charts@2.0.3(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1)':
     dependencies:
-      '@types/recharts-scale': 1.0.3
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       recharts: 3.8.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1)
-      recharts-scale: 0.4.5
     transitivePeerDependencies:
       - '@types/react'
       - react-is
@@ -7826,8 +7818,6 @@ snapshots:
   '@types/react@19.2.14':
     dependencies:
       csstype: 3.2.3
-
-  '@types/recharts-scale@1.0.3': {}
 
   '@types/stack-utils@2.0.3': {}
 
@@ -10695,10 +10685,6 @@ snapshots:
 
   readdirp@4.1.2:
     optional: true
-
-  recharts-scale@0.4.5:
-    dependencies:
-      decimal.js-light: 2.5.1
 
   recharts@3.8.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@18.3.1)(react@19.2.4)(redux@5.0.1):
     dependencies:
