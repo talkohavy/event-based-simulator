@@ -1,0 +1,52 @@
+:root {
+  --tk-custom-line-chart-background-color: #fff;
+  --tk-custom-line-chart-line-color-0: #000;
+  --tk-custom-line-chart-line-color-1: #3f3fff;
+  --tk-custom-line-chart-line-color-2: #ffbb28;
+  --tk-custom-line-chart-line-color-3: #ff8042;
+  --tk-custom-line-chart-line-color-4: #4caf50;
+  --tk-custom-line-chart-line-color-5: #9c27b0;
+  --tk-custom-line-chart-line-color-6: #ff5722;
+  --tk-custom-line-chart-line-color-7: #795548;
+  --tk-custom-line-chart-line-color-8: #607d8b;
+  --tk-custom-line-chart-line-color-9: #e91e63;
+  --tk-custom-line-chart-line-color-10: #00c49f;
+  --tk-custom-line-chart-grid-color: #000;
+  --tk-custom-line-chart-x-axis-line-color: #000;
+  --tk-custom-line-chart-x-axis-tick-label-color: #000;
+  --tk-custom-line-chart-x-axis-label-color: #343434;
+  --tk-custom-line-chart-y-axis-line-color: #000;
+  --tk-custom-line-chart-y-axis-tick-line-color: #000;
+  --tk-custom-line-chart-y-axis-tick-label-color: #000;
+  --tk-custom-line-chart-y-axis-label-color: #343434;
+  --tk-custom-line-chart-value-color: #000;
+  --tk-custom-line-chart-tooltip-border-color: #a3a3a3;
+  --tk-custom-line-chart-tooltip-background-color: #fff;
+  --tk-custom-line-chart-reference-line-color: #666;
+}
+
+html[data-theme='dark'] {
+  --tk-custom-line-chart-background-color: #000;
+  --tk-custom-line-chart-line-color-0: #fff;
+  --tk-custom-line-chart-grid-color: #fff;
+  --tk-custom-line-chart-x-axis-line-color: #fff;
+  --tk-custom-line-chart-x-axis-tick-label-color: #888686;
+  --tk-custom-line-chart-x-axis-label-color: #d1d1d1;
+  --tk-custom-line-chart-y-axis-line-color: #fff;
+  --tk-custom-line-chart-y-axis-tick-line-color: red;
+  --tk-custom-line-chart-y-axis-tick-label-color: #888686;
+  --tk-custom-line-chart-y-axis-label-color: #d1d1d1;
+  --tk-custom-line-chart-value-color: #fff;
+  --tk-custom-line-chart-tooltip-border-color: #fff;
+  --tk-custom-line-chart-tooltip-background-color: #000;
+  --tk-custom-line-chart-reference-line-color: #999;
+}
+
+.tk-custom-line-chart {
+  font-family: sans-serif;
+  font-weight: 100;
+}
+
+html[data-theme='dark'] .tk-custom-line-chart .inactive {
+  opacity: 0.2;
+}

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { BarChart, type BarSeries } from '@talkohavy/charts';
 import ConfigPanel from './content/ConfigPanel';
 import EventLogTable from './content/EventLogTable';
-import StepChart from './content/StepChart';
 import SummaryPanel from './content/SummaryPanel';
 import { CARD, DEFAULT_CONFIG } from './logic/constants';
 import { runMM1Simulation, type MM1Config } from './presets/mm1Queue';
@@ -30,7 +30,21 @@ export default function SimulationPage() {
     }, 10);
   };
 
-  const queueData = results?.timedStats?.queueLength;
+  const data: Array<BarSeries> = useMemo(() => {
+    const seriesDataRaw = results?.timedStats?.queueLength;
+
+    if (seriesDataRaw?.length) {
+      const seriesData = seriesDataRaw.map((item) => ({ x: item.time, y: item.value }));
+
+      const lineSeries = { name: 'Queue Length', data: seriesData };
+
+      return [lineSeries];
+    }
+
+    return [];
+  }, [results]);
+
+  console.log('data is:', data);
 
   return (
     <div className='size-full flex flex-col gap-6 overflow-auto p-6'>
@@ -52,7 +66,22 @@ export default function SimulationPage() {
         )}
       </div>
 
-      {queueData && <StepChart data={queueData} title='Queue Length Over Time' yLabel='Queue Length' />}
+      {/* {queueData && <StepChart data={queueData} title='Queue Length Over Time' yLabel='Queue Length' />} */}
+      {data.length > 0 && (
+        <div className='w-full h-150 shrink-0'>
+          <BarChart
+            data={data}
+            settings={{
+              legend: { show: true, nameFormatter: (name) => name },
+              yAxis: {
+                label: 'Queue Length',
+              },
+              zoomSlider: { show: true },
+            }}
+            className='rounded-lg border p-4 font-thin'
+          />
+        </div>
+      )}
 
       {results && <EventLogTable events={results.eventLog} />}
     </div>
