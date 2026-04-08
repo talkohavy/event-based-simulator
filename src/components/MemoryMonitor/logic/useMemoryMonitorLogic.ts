@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react';
 import { getMemorySnapshot } from './utils/getMemorySnapshot';
-import type { MemorySnapshot, UseMemoryMonitorOptions } from '../types';
+import type { MemorySnapshot } from '../types';
 
-export function useMemoryMonitorLogic(props: UseMemoryMonitorOptions) {
+export type UseMemoryMonitorLogicProps = {
+  /**
+   * Polling interval in milliseconds.
+   * @default 2000
+   */
+  intervalMs?: number;
+};
+
+export function useMemoryMonitorLogic(props: UseMemoryMonitorLogicProps) {
   const { intervalMs = 2000 } = props;
 
   const [snapshot, setSnapshot] = useState<MemorySnapshot | null>(getMemorySnapshot);
