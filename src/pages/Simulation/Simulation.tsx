@@ -44,8 +44,6 @@ export default function SimulationPage() {
     return [];
   }, [results]);
 
-  console.log('data is:', data);
-
   return (
     <div className='size-full flex flex-col gap-6 overflow-auto p-6'>
       <div>
