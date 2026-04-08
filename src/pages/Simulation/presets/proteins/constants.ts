@@ -4,7 +4,11 @@ export const ProteinEventTypes = {
 } as const;
 
 export const DEFAULT_PROTEINS_CONFIG = {
+  alphaMode: 'fixed',
   alpha: 0.285,
+  alphaSS: 0.28,
+  hillH: 2,
+  hillK: 1,
   proteinsStart: 4,
   foodStart: 0,
   meanFoodTime: 6,

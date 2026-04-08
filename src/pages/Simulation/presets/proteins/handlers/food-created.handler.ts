@@ -22,5 +22,6 @@ export function foodCreatedHandler(config: ProteinsConfig) {
 
     stats.recordTimeSeries('proteins', clock, state.proteins);
     stats.recordTimeSeries('food', clock, state.food);
+    stats.recordTimeSeries('alpha', clock, state.currentAlpha);
   };
 }

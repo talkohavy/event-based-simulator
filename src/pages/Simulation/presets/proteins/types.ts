@@ -1,6 +1,25 @@
+export type AlphaMode = 'fixed' | 'dynamic';
+
 export type ProteinsConfig = {
-  /** Probability that a protein chooses to duplicate (vs create food). */
+  /** Whether alpha is a fixed constant or computed via the Hill function. */
+  alphaMode: AlphaMode;
+  /** Fixed-mode: probability that a protein chooses to duplicate (vs create food). */
   alpha: number;
+  /**
+   * Dynamic-mode: steady-state alpha — the maximum probability of duplicating
+   * when food is infinitely plentiful relative to proteins.
+   */
+  alphaSS: number;
+  /**
+   * Dynamic-mode: Hill coefficient — controls how sharply alpha drops
+   * as proteins outgrow food. Higher h = sharper switch.
+   */
+  hillH: number;
+  /**
+   * Dynamic-mode: scaling constant k.
+   * alpha = alphaSS / (1 + (proteins * k / food) ^ h)
+   */
+  hillK: number;
   /** Number of proteins at t=0. */
   proteinsStart: number;
   /** Number of food units at t=0. */
