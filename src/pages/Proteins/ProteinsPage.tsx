@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { LineChart, type LineSeries } from '@talkohavy/charts';
 import { downsample } from '../Simulation/logic/utils/downsample';
 import { DEFAULT_PROTEINS_CONFIG, runProteinSimulation, type ProteinsConfig } from '../Simulation/presets/proteins';
+import type { AlphaMode } from '../Simulation/presets/proteins/types';
 import type { SimulationResults } from '@src/lib/simulation';
 
 const CARD = 'rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm';
@@ -41,6 +42,8 @@ function ConfigPanel({
     );
   }
 
+  const isDynamic = config.alphaMode === 'dynamic';
+
   return (
     <div className={`${CARD} flex flex-col gap-4`}>
       <div>
@@ -48,8 +51,56 @@ function ConfigPanel({
         <p className='text-xs text-gray-500 dark:text-gray-400 mt-0.5'>Protein Growth Simulation</p>
       </div>
 
+      {/* Alpha mode toggle */}
+      <div className='flex rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600 text-sm font-medium'>
+        {(['fixed', 'dynamic'] as AlphaMode[]).map((mode) => (
+          <button
+            key={mode}
+            type='button'
+            onClick={() => onChange({ ...config, alphaMode: mode })}
+            className={`flex-1 py-2 transition-colors cursor-pointer capitalize ${
+              config.alphaMode === mode
+                ? 'bg-violet-600 text-white'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          >
+            {mode === 'fixed' ? 'Fixed α' : 'Dynamic α (Hill)'}
+          </button>
+        ))}
+      </div>
+
+      {/* Alpha fields */}
+      {!isDynamic ? (
+        <div>{field('α — duplicate probability', 'alpha', 0.01, 0)}</div>
+      ) : (
+        <div className='grid grid-cols-3 gap-3'>
+          {field('αSS (steady-state)', 'alphaSS', 0.01, 0)}
+          {field('h (Hill exponent)', 'hillH', 0.5, 0.5)}
+          {field('k (scaling factor)', 'hillK', 0.1, 0.1)}
+        </div>
+      )}
+
+      <div className='rounded-lg bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 p-3 text-xs text-violet-700 dark:text-violet-300 space-y-1'>
+        {isDynamic ? (
+          <>
+            <p className='font-semibold font-mono'>α = αSS / (1 + (P·k / F)^h)</p>
+            <p>
+              Alpha adapts at every decision — when food is scarce relative to proteins, α collapses toward 0,
+              shifting all effort into food production. When food is abundant, α rises toward αSS.
+            </p>
+          </>
+        ) : (
+          <p>
+            <span className='font-semibold'>α = {fmt(config.alpha, 3)}</span> — constant probability. Each free
+            protein draws a uniform random number; if it falls below α <em>and</em> food is available, it
+            duplicates.
+          </p>
+        )}
+        <p className='pt-0.5'>Proteins waiting to duplicate but finding no food will sleep until food arrives.</p>
+      </div>
+
+      {/* Common fields */}
       <div className='grid grid-cols-2 gap-3'>
-        {field('α (duplicate probability)', 'alpha', 0.01, 0)}
         {field('Proteins at t=0 (P₀)', 'proteinsStart', 1, 1)}
         {field('Food at t=0 (F₀)', 'foodStart', 1, 0)}
         {field('Mean food time (min)', 'meanFoodTime', 0.1, 0.01)}
@@ -57,14 +108,6 @@ function ConfigPanel({
         {field('Max time (min)', 'maxTime', 10, 1)}
         {field('Max proteins (stop)', 'maxProteins', 1, 2)}
         {field('Random seed', 'seed', 1, 0)}
-      </div>
-
-      <div className='rounded-lg bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 p-3 text-xs text-violet-700 dark:text-violet-300 space-y-1'>
-        <p>
-          <span className='font-semibold'>α = {fmt(config.alpha, 3)}</span> — each free protein rolls a uniform random
-          number. If it falls below α <em>and</em> food is available, it duplicates; otherwise it creates food.
-        </p>
-        <p>Proteins waiting to duplicate but finding no food will sleep until a food unit arrives.</p>
       </div>
 
       <button
@@ -82,15 +125,21 @@ function ConfigPanel({
 function SummaryPanel({ results, config }: { results: SimulationResults; config: ProteinsConfig }) {
   const { finalState, eventsProcessed, clock } = results;
 
+  const alphaRow =
+    config.alphaMode === 'dynamic'
+      ? { label: 'Final α (Hill)', value: fmt(finalState.currentAlpha, 4) }
+      : { label: 'α (fixed)', value: fmt(config.alpha, 4) };
+
   const rows = [
     { label: 'Final protein count (P)', value: String(finalState.proteins) },
     { label: 'Final food count (F)', value: String(finalState.food) },
     { label: 'Sleeping proteins at end', value: String(finalState.sleeping) },
+    alphaRow,
+    { label: 'Doublings from P₀', value: fmt(Math.log2(finalState.proteins / config.proteinsStart), 2) },
+    { label: 'Avg P (time-weighted)', value: fmt(results.timeWeightedAverages.proteins ?? 0, 3) },
+    { label: 'Avg F (time-weighted)', value: fmt(results.timeWeightedAverages.food ?? 0, 3) },
     { label: 'Events processed', value: String(eventsProcessed) },
     { label: 'Final clock (min)', value: fmt(clock, 3) },
-    { label: 'Doublings from P₀', value: fmt(Math.log2(finalState.proteins / config.proteinsStart), 2) },
-    { label: 'Avg F (time-weighted)', value: fmt(results.timeWeightedAverages.food ?? 0, 3) },
-    { label: 'Avg P (time-weighted)', value: fmt(results.timeWeightedAverages.proteins ?? 0, 3) },
   ];
 
   return (
@@ -138,35 +187,47 @@ export default function ProteinsPage() {
 
     const rawProteins = results.timedStats.proteins ?? [];
     const rawFood = results.timedStats.food ?? [];
+    const rawAlpha = results.timedStats.alpha ?? [];
 
-    const proteinSampled =
-      rawProteins.length > MAX_CHART_POINTS ? downsample(rawProteins, MAX_CHART_POINTS) : rawProteins;
-    const foodSampled = rawFood.length > MAX_CHART_POINTS ? downsample(rawFood, MAX_CHART_POINTS) : rawFood;
+    const sample = <T,>(arr: T[]) => (arr.length > MAX_CHART_POINTS ? downsample(arr, MAX_CHART_POINTS) : arr);
 
-    return [
+    const series: Array<LineSeries> = [
       {
         name: 'Proteins (P)',
-        data: proteinSampled.map((pt) => ({ x: pt.time, y: pt.value })),
+        data: sample(rawProteins).map((pt) => ({ x: pt.time, y: pt.value })),
         color: '#7c3aed',
         lineWidth: 2,
         dots: { r: 0 },
       },
       {
         name: 'Food (F)',
-        data: foodSampled.map((pt) => ({ x: pt.time, y: pt.value })),
+        data: sample(rawFood).map((pt) => ({ x: pt.time, y: pt.value })),
         color: '#059669',
         lineWidth: 2,
         dots: { r: 0 },
       },
     ];
-  }, [results]);
+
+    if (config.alphaMode === 'dynamic' && rawAlpha.length > 0) {
+      series.push({
+        name: 'α (dynamic)',
+        data: sample(rawAlpha).map((pt) => ({ x: pt.time, y: pt.value })),
+        color: '#d97706',
+        lineWidth: 1.5,
+        isDashed: true,
+        dots: { r: 0 },
+      });
+    }
+
+    return series;
+  }, [results, config.alphaMode]);
 
   return (
     <div className='size-full flex flex-col gap-6 overflow-auto p-6'>
       <div>
         <h1 className='text-2xl font-bold'>Protein Growth Simulation</h1>
         <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-          Discrete-event simulation of protein self-replication — port of an old university MATLAB experiment
+          Discrete-event simulation of protein self-replication — port of a university MATLAB experiment
         </p>
       </div>
 
@@ -194,7 +255,10 @@ export default function ProteinsPage() {
               lines: { hideDots: true },
               tooltip: {
                 xValueFormatter: (v) => `t = ${Number(v).toFixed(2)} min`,
-                yValueFormatter: (v) => String(Math.round(v)),
+                yValueFormatter: (v) => {
+                  const n = Number(v);
+                  return n < 1 ? n.toFixed(4) : String(Math.round(n));
+                },
               },
             }}
             className='rounded-lg border p-4 font-thin'
