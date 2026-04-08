@@ -1,8 +1,7 @@
-import { POSITION_CLASSES } from '../../logic/constants';
-import type { Position } from '../../types';
+import { POSITION_CLASSES, type PositionValues } from '../../logic/constants';
 
 type NotSupportedProps = {
-  position: Position;
+  position: PositionValues;
 };
 
 export default function NotSupported(props: NotSupportedProps) {
